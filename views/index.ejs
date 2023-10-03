@@ -8,12 +8,18 @@
     <h2 class="articles__heading">Latest Posts</h2>
   
     <ul class="article-ul">
-   <li>
-    <a href="#">
-        <span>First Post</span>
-        <span class="article-list__date">Date</span>
-    </a>
-   </li>
+
+      <% posts.forEach(post => { %>
+
+        <li>
+          <a href="#">
+              <span><%= post.title %></span>
+              <span class="article-list__date"><%= post.createdAt.toDateString() %></span>
+          </a>
+         </li>
+       
+      <% }) %>
+
     </ul>
   
   
