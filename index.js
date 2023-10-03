@@ -23,6 +23,7 @@ app.set('view engine', 'ejs');
 
 
 app.use('/', router)
+app.use('/admin', router)
 
 
 
