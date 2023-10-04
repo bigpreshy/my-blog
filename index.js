@@ -4,7 +4,8 @@ const express = require('express');
 
 const expressEjsLayaout = require('express-ejs-layouts');
 const cookieParser = require('cookie-parser');
-
+const flash = require('connect-flash');
+const methodOverride = require('method-override');
 const session = require('express-session');
 const { router } = require('./routes/main');
 const {isActiveRoute} = require('./middleware/routeHelp');
@@ -19,7 +20,8 @@ const PORT = 3000 || process.env.PORT;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
-// app.use(methodOverride('_method'));
+app.use(methodOverride('_method'));
+app.use(flash())
 
 
 app.use(

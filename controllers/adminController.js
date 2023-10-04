@@ -89,10 +89,17 @@ const dashboard = async (req, res) => {
       description: "Simple Blog created with NodeJs, Express & Prisma.",
     };
 
-    const posts = await prisma.post.findMany();
+    const success = req.flash('message');
+
+    const posts = await prisma.post.findMany({
+        orderBy: {
+            createdAt: "desc",
+          },
+    });
     res.render("admin/dashboard", {
       metaInfo,
       posts,
+      success,
       layout: adminLayout,
     });
   } catch (error) {
@@ -100,6 +107,7 @@ const dashboard = async (req, res) => {
   }
 };
 
+//Add post view
 const addPostPage = async (req, res) => {
   try {
     const metaInfo = {
@@ -117,6 +125,36 @@ const addPostPage = async (req, res) => {
   }
 };
 
+//add post POST
+
+const addPost = async (req, res) => {
+  try {
+    try {
+      const title = req.body.title;
+      const body = req.body.body;
+      const beforeSlug = title.split(" ");
+      const slug = beforeSlug.join("-");
+      
+      const newPost = await prisma.post.create({
+        data: {
+          title: title,
+          body: body,
+          slug: slug.toLowerCase(),
+        },
+      });
+
+      req.flash('message', 'Post added successfully');
+      res.redirect("/admin/dashboard");
+    } catch (error) {
+      console.error(error);
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+// edit single view
+
 const editPostPage = async (req, res) => {
   try {
     const metaInfo = {
@@ -124,6 +162,7 @@ const editPostPage = async (req, res) => {
       description: "Free NodeJs Post Management System",
     };
 
+    const success = req.flash('message');
     const post = await prisma.post.findUnique({
       where: {
         slug: req.params.slug,
@@ -131,7 +170,8 @@ const editPostPage = async (req, res) => {
     });
 
     res.render("admin/edit-post", {
-        metaInfo,
+      metaInfo,
+      success,
       post,
       layout: adminLayout,
     });
@@ -140,11 +180,67 @@ const editPostPage = async (req, res) => {
   }
 };
 
+
+const editPost = async (req, res) => {
+
+    try {
+
+        const slug = req.body.slug;
+        const beforeSlug = slug.split(" ");
+        const slugMain = beforeSlug.join("-");
+
+        const updatedPost = await prisma.post.update({
+            where: {
+              slug: req.params.slug, 
+            },
+            data: {
+              title: req.body.title,
+              body: req.body.body,
+              slug: slugMain.toLowerCase(),
+            //   updatedAt: new Date(), 
+            },
+          });
+    
+          req.flash('message', 'Post edited successfully');
+        res.redirect(`/admin/edit-post/${slugMain}`);
+    
+      } catch (error) {
+        console.log(error);
+      }
+}
+
+
+const deletePost = async(req, res) => {
+    try {
+        await prisma.post.delete({
+            where: {
+              slug: req.params.slug, // Assuming 'id' is of type integer
+            },
+          });
+
+          req.flash('message', 'Post deleted successfully');
+        res.redirect('/admin/dashboard');
+      } catch (error) {
+        console.log(error);
+      }
+}
+
+
+const logout = async(req, res) => {
+    res.clearCookie('token');
+    //res.json({ message: 'Logout successful.'});
+    res.redirect('/');
+}
+
 module.exports = {
   loginPage,
   dashboard,
   loginAdmin,
   register,
   addPostPage,
-  editPostPage
+  editPostPage,
+  addPost,
+  editPost,
+  deletePost,
+  logout
 };

@@ -82,7 +82,7 @@ const search = async (req, res) => {
 
     let searchTerm = req.body.searchTerm;
 
-    console.log(searchTerm);
+    // console.log(searchTerm);
     const searchNoSpecialChar = searchTerm.replace(/[^a-zA-Z0-9 ]/g, "");
 
     const posts = await prisma.post.findMany({
@@ -104,9 +104,12 @@ const search = async (req, res) => {
       },
     });
 
+    // console.log(posts.length);
+
     res.render("searchHome", {
       posts,
       metaInfo,
+      searchTerm,
       currentRoute: "/",
     });
   } catch (error) {

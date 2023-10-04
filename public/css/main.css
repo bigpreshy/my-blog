@@ -338,3 +338,17 @@ img {
 .pagination:hover {
   color: var(--black);
 }
+
+
+.flash-messages {
+  margin-top: 20px;
+}
+
+.flash-message {
+  background-color: #dff0d8;
+  color: #3c763d;
+  padding: 10px;
+  border-radius: 5px;
+  margin: 10px auto;
+  width: 300px;
+}

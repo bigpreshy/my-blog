@@ -2,16 +2,19 @@
 <div class="admin-title">
   <h2>View / Edit Post</h2>
 
-  <form action="/delete-post/<%= post.slug %>?_method=DELETE" method="POST">
+  <form action="/admin/delete-post/<%= post.slug %>?_method=DELETE" method="POST">
     <input type="submit" value="Delete" class="btn-delete btn">
   </form>
 
 </div>
+<h3><%= success %></h3>
 
-<form action="/edit-post/<%= post.slug%>?_method=PUT" method="POST">
+<form action="/admin/edit-post/<%= post.slug%>?_method=PUT" method="POST">
 
   <label for="title"><b>Title</b></label>
-  <input type="text" placeholder="Post Title" name="title" value="<%= post.title %>">
+  <input type="text" placeholder="Post Title" name="title" value="<%= post.title %>" id="titleInput">
+
+  <input type="hidden"  placeholder="Slug" name="slug" value="<%= post.title %>" id="slugInput">
 
   <label for="body"><b>Content</b></label>
   <textarea name="body" cols="50" rows="10"><%= post.body %></textarea>
@@ -19,3 +22,17 @@
   <input type="submit" value="Update" class="btn">
 
 </form>
+
+
+<script>
+    // Get references to the input elements
+const titleInput = document.getElementById('titleInput');
+const slugInput = document.getElementById('slugInput');
+
+// Add an event listener to the title input
+titleInput.addEventListener('input', function() {
+  // Update the value of the slug input with the value from the title input
+  slugInput.value = titleInput.value;
+});
+
+</script>

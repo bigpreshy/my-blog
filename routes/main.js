@@ -1,6 +1,6 @@
 const express = require("express");
 const { homePage, singlePost, search } = require("../controllers/usersViewController");
-const { loginPage, loginAdmin, dashboard, register, addPostPage, editPostPage } = require("../controllers/adminController");
+const { loginPage, loginAdmin, dashboard, register, addPostPage, editPostPage, addPost, editPost, deletePost, logout } = require("../controllers/adminController");
 const { authenticatedMiddleware } = require("../middleware/isAdmin");
 const router = express.Router();
 
@@ -17,7 +17,11 @@ router.post("/register", register)
 
 router.get("/admin/dashboard",authenticatedMiddleware, dashboard)
 router.get("/admin/add-post", authenticatedMiddleware, addPostPage)
-router.get("/admin/edit-post", authenticatedMiddleware, editPostPage)
+router.post("/admin/add-post", authenticatedMiddleware, addPost)
+router.get("/admin/edit-post/:slug", authenticatedMiddleware, editPostPage)
+router.put("/admin/edit-post/:slug", authenticatedMiddleware, editPost)
+router.delete("/admin/delete-post/:slug", authenticatedMiddleware, deletePost)
+router.get("/admin/logout", authenticatedMiddleware, logout)
 
 
 
