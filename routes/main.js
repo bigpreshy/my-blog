@@ -1,5 +1,7 @@
 const express = require("express");
 const { homePage, singlePost, search } = require("../controllers/usersViewController");
+const { loginPage, loginAdmin, dashboard, register, addPostPage, editPostPage } = require("../controllers/adminController");
+const { authenticatedMiddleware } = require("../middleware/isAdmin");
 const router = express.Router();
 
 
@@ -7,6 +9,16 @@ const router = express.Router();
 router.get("", homePage);
 router.get("/article/:slug", singlePost);
 router.post("/search", search);
+
+
+router.get("/admin", loginPage)
+router.post("/admin", loginAdmin)
+router.post("/register", register)
+
+router.get("/admin/dashboard",authenticatedMiddleware, dashboard)
+router.get("/admin/add-post", authenticatedMiddleware, addPostPage)
+router.get("/admin/edit-post", authenticatedMiddleware, editPostPage)
+
 
 
 
