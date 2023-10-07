@@ -9,10 +9,10 @@ const methodOverride = require('method-override');
 const session = require('express-session');
 const { router } = require('./routes/main');
 const {isActiveRoute} = require('./middleware/routeHelp');
-const { PrismaClient } = require('@prisma/client');
+
 
 const app = express();
-const prisma = new PrismaClient();
+
 
 const PORT = 3000 || process.env.PORT;
 

@@ -1,7 +1,6 @@
-// const express = require("express");
-// const router = express.Router();
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
+// const { post } = require('../models')
+const { Op } = require('sequelize');
+const {Post} = require("../models");
 
 const homePage = async (req, res) => {
   try {
@@ -19,15 +18,20 @@ const homePage = async (req, res) => {
     //   .limit(perPage)
     //   .exec();
 
-    const posts = await prisma.post.findMany({
-      orderBy: {
-        createdAt: "desc",
-      },
-      skip: perPage * (page - 1),
-      take: perPage,
-    });
+    // const posts = await prisma.post.findMany({
+    //   orderBy: {
+    //     createdAt: "desc",
+    //   },
+    //   skip: perPage * (page - 1),
+    //   take: perPage,
+    // });
 
-    const count = await prisma.post.count();
+const posts = await Post.findAll({
+  order: [['createdAt', 'DESC']], // Order by createdAt in descending order
+  offset: perPage * (page - 1), // Calculate the number of records to skip
+  limit: perPage, // Limit the number of records per page
+});
+     const count = await Post.count()
     const nextPage = parseInt(page) + 1;
     const hasNextPage = nextPage <= Math.ceil(count / perPage);
 
@@ -52,11 +56,12 @@ const singlePost = async (req, res) => {
 
     // const post = await prisma.post.find;
 
-    const post = await prisma.post.findUnique({
+    const post = await Post.findOne({
       where: {
         slug: slug,
       },
     });
+    
 
     const metaInfo = {
       title: post.title,
@@ -85,19 +90,17 @@ const search = async (req, res) => {
     // console.log(searchTerm);
     const searchNoSpecialChar = searchTerm.replace(/[^a-zA-Z0-9 ]/g, "");
 
-    const posts = await prisma.post.findMany({
+    const posts = await Post.findAll({
       where: {
-        OR: [
+        [Op.or]: [
           {
             title: {
-              contains: searchNoSpecialChar,
-              // mode: "insensitive", //Not needed
+              [Op.substring]: searchNoSpecialChar,
             },
           },
           {
             body: {
-              contains: searchNoSpecialChar,
-              // mode: "insensitive",  // Not needed
+              [Op.substring]: searchNoSpecialChar,
             },
           },
         ],

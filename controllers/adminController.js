@@ -1,7 +1,6 @@
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
-const bcrypt = require("bcryptjs");
 
+const bcrypt = require("bcryptjs");
+const {User, Post} = require("../models");
 const adminLayout = "../views/common/admin";
 const jwt = require("jsonwebtoken");
 
@@ -30,7 +29,7 @@ const loginAdmin = async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    const user = await prisma.user.findUnique({
+    const user = await User.findOne({
       where: {
         username: username,
       },
@@ -62,13 +61,11 @@ const register = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     try {
-      const user = await prisma.user.create({
-        data: {
-          username: username,
-          password: hashedPassword,
-        },
+      const newUser = await User.create({
+        username: username,
+        password: hashedPassword,
       });
-      res.status(201).json({ message: "User Created", user });
+      res.status(201).json({ message: "User Created", newUser });
     } catch (error) {
       if (error.code === 11000) {
         res.status(409).json({ message: "User already in use" });
@@ -91,11 +88,10 @@ const dashboard = async (req, res) => {
 
     const success = req.flash('message');
 
-    const posts = await prisma.post.findMany({
-        orderBy: {
-            createdAt: "desc",
-          },
+    const posts = await Post.findAll({
+      order: [['createdAt', 'DESC']]
     });
+
     res.render("admin/dashboard", {
       metaInfo,
       posts,
@@ -135,13 +131,11 @@ const addPost = async (req, res) => {
       const beforeSlug = title.split(" ");
       const slug = beforeSlug.join("-");
       
-      const newPost = await prisma.post.create({
-        data: {
-          title: title,
-          body: body,
-          slug: slug.toLowerCase(),
-        },
-      });
+   const newPost = await Post.create({
+      title: title,
+      body: body,
+      slug: slug.toLowerCase(),
+    });
 
       req.flash('message', 'Post added successfully');
       res.redirect("/admin/dashboard");
@@ -163,7 +157,8 @@ const editPostPage = async (req, res) => {
     };
 
     const success = req.flash('message');
-    const post = await prisma.post.findUnique({
+
+    const post = await Post.findOne({
       where: {
         slug: req.params.slug,
       },
@@ -189,17 +184,23 @@ const editPost = async (req, res) => {
         const beforeSlug = slug.split(" ");
         const slugMain = beforeSlug.join("-");
 
-        const updatedPost = await prisma.post.update({
+
+        const updatedPost = await Post.update(
+          {
+            title: req.body.title,
+            body: req.body.body,
+            slug: slugMain.toLowerCase(),
+            // updatedAt: new Date(), // You can uncomment this line to update the 'updatedAt' field if needed
+          },
+          {
             where: {
-              slug: req.params.slug, 
+              slug: req.params.slug,
             },
-            data: {
-              title: req.body.title,
-              body: req.body.body,
-              slug: slugMain.toLowerCase(),
-            //   updatedAt: new Date(), 
-            },
-          });
+            returning: true, // This option ensures that the updated record is returned
+          }
+        );
+
+
     
           req.flash('message', 'Post edited successfully');
         res.redirect(`/admin/edit-post/${slugMain}`);
