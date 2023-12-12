@@ -13,7 +13,7 @@ router.post("/search", search);
 
 router.get("/admin", loginPage)
 router.post("/admin", loginAdmin)
-router.post("/register", register)
+// router.post("/register", register)
 
 router.get("/admin/dashboard",authenticatedMiddleware, dashboard)
 router.get("/admin/add-post", authenticatedMiddleware, addPostPage)
