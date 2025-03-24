@@ -354,8 +354,8 @@ img {
 }
 
 .post-thumbnail {
-  width: 32px;
-  height: 32px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   object-fit: cover;
   margin-right: 12px;
