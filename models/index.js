@@ -19,7 +19,6 @@ if (config.use_env_variable) {
 sequelize.authenticate()
   .then(() => console.log(`Connected to ${config.database} database`))
   .catch(err => console.error('Connection failed:', err));
-ß
 
 fs
   .readdirSync(__dirname)
