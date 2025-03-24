@@ -14,7 +14,7 @@ const {isActiveRoute} = require('./middleware/routeHelp');
 const app = express();
 
 
-const PORT = 3000 || process.env.PORT;
+const PORT = 6000 || process.env.PORT;
 
 
 app.use(express.urlencoded({ extended: true }));
