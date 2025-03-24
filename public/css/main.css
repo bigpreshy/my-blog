@@ -352,3 +352,13 @@ img {
   margin: 10px auto;
   width: 300px;
 }
+
+.post-thumbnail {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 12px;
+  vertical-align: middle;
+  border: 2px solid #ddd;
+}

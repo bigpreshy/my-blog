@@ -10,15 +10,18 @@
     <ul class="article-ul">
 
       <% posts.forEach(post => { %>
-
         <li>
-          <a href="/article/<%= post.slug %>">
-              <span><%= post.title %></span>
-              <span class="article-list__date"><%= post.createdAt.toDateString() %></span>
-          </a>
-         </li>
-       
-      <% }) %>
+            <a href="/article/<%= post.slug %>">
+                <img src="https://api.dicebear.com/7.x/identicon/svg?seed=<%= post.slug %>&radius=50&size=48&backgroundColor=ffffff" 
+                     alt="Article thumbnail"
+                     class="post-thumbnail">
+                <div class="post-content">
+                    <span><%= post.title %></span>
+                    <span class="article-list__date"><%= post.createdAt.toDateString() %></span>
+                </div>
+            </a>
+        </li>
+    <% }) %>
 
     </ul>
   
